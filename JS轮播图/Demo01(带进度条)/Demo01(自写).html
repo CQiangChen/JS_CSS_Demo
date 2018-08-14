@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset='utf-8'>
+  <title>图片轮播</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .main {
+      margin: 20px auto;
+      width: 1224px;
+      height: 630px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #imgwrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 99999px;
+      height: 500px;
+    }
+
+    #imgwrap>img {
+      float: left;
+    }
+
+    .navswrap {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 1224px;
+      height: 167px;
+      cursor: pointer;
+    }
+
+    .nav {
+      float: left;
+      width: 204px;
+      height: 167px;
+    }
+
+    .navpic {
+      width: 204px;
+      height: 162px;
+      background-position: right center;
+    }
+
+    .nav0 .navpic {
+      background-image: url('../images/banner_00.jpg');
+    }
+    .nav1 .navpic {
+      background-image: url('../images/banner_01.jpg');
+    }
+    .nav2 .navpic {
+      background-image: url('../images/banner_02.jpg');
+    }
+    .nav3 .navpic {
+      background-image: url('../images/banner_03.jpg');
+    }
+    .nav4 .navpic {
+      background-image: url('../images/banner_04.jpg');
+    }
+    .nav5 .navpic {
+      background-image: url('../images/banner_05.jpg');
+    }
+
+    .prowrap {
+      width: 204px;
+      height: 5px;
+    }
+
+    .pro {
+      height: 5px;
+      width: 0px;
+    }
+
+    .nav0 .prowrap {
+      background: #7b5596;
+    }
+
+    .nav0 .pro {
+      background: #49047a;
+    }
+
+    .nav1 .prowrap {
+      background: #83a2cc;
+    }
+
+    .nav1 .pro {
+      background: #13478f;
+    }
+
+    .nav2 .prowrap {
+      background: #e18e40;
+    }
+
+    .nav2 .pro {
+      background: #b94e00;
+    }
+
+    .nav3 .prowrap {
+      background: #47acab;
+    }
+
+    .nav3 .pro {
+      background: #00605f;
+    }
+
+    .nav4 .prowrap {
+      background: #c86c8c;
+    }
+
+    .nav4 .pro {
+      background: #a41a4a;
+    }
+
+    .nav5 .prowrap {
+      background: #9089d6;
+    }
+
+    .nav5 .pro {
+      background: #4a419e;
+    }
+  </style>
+</head>
+
+<body>
+  <div class='main'>
+    <div id='imgwrap'>
+      <img src='../images/banner_00.jpg'>
+      <img src='../images/banner_01.jpg'>
+      <img src='../images/banner_02.jpg'>
+      <img src='../images/banner_03.jpg'>
+      <img src='../images/banner_04.jpg'>
+      <img src='../images/banner_05.jpg'>
+    </div>
+    <div class='navswrap'>
+      <div class='nav nav0' data-index='0'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+      <div class='nav nav1' data-index='1'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+      <div class='nav nav2' data-index='2'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+      <div class='nav nav3' data-index='3'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+      <div class='nav nav4' data-index='4'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+      <div class='nav nav5' data-index='5'>
+        <div class='navpic'></div>
+        <div class='prowrap'>
+          <div class='pro'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var imgwrap = document.querySelector('#imgwrap');
+    var navs = document.querySelectorAll('.nav');
+    var pros = document.querySelectorAll('.pro');
+    //图片切换数据
+    var picDuration = 500;
+    var picInterval = 20;
+    var picNum = 6; //总共几张图片
+    var nowIndex = 0;
+    var picWidth = 1224;
+    //进度条切换数据
+    var proDuration = 5000;
+    var proInterval = 20;
+
+
+    progress(pros[nowIndex],proDuration,proInterval);
+    //附加监听事件
+    var unboundForEach = Array.prototype.forEach;
+    var forEach = Function.prototype.call.bind(unboundForEach);
+
+    forEach(navs, (el, index) => {
+      el.addEventListener('click', () => {
+        nowIndex = index;
+        moveTo(imgwrap, -index * picWidth, picDuration, picInterval);
+      })
+    })
+
+    /*
+      具体操作（仅限于图片移动）
+      1、把所有图片当作横向拼成的一个很长很长的图
+      2、每次先获取显示的图片的位置(nowL)，就是left值，
+      3、算出下一次要移动到的位置(to)-当前位置(nowL) = 要移动的距离(dis)
+      4、符号，因为存在向前或者向后不同的移动，每次的移动是向前(+)还是向后(-)，根据点击的位置拿到的(to = -index*图片宽度)决定
+      执行阶段
+      5、每次移动 符号*步长 + 现在的位置(left值)，
+      6、并用cover记录一共移动多少步长，当大于 一共要移动的距离(dis)时执行下一步
+      7、因为每次最后一次是 to - stepLength ,所以要在else中将left值修整下，调整为最终到达的位置以便于无缝连接
+      8、创建计时器，每隔一定时间操作，直到这一次的图片切换结束
+    */
+
+    //图片移动 需求：现在的位置，移动的距离（要移动到的位置-现在的位置），符号（因为存在向前或者向后不同的移动），步长，cover方便判断步长累加值
+    function moveTo(elem, to, duration, interval) {
+      var nowL = parseInt(getStyle(elem, 'left'));
+      var dis = Math.abs(to - nowL);
+      var symbol = (to - nowL) / dis; //符号
+      var stepLength = dis / (duration / interval);
+      var cover = 0;
+      var step = () => {
+        if (cover + stepLength < dis) {
+          elem.style.left = parseFloat(getStyle(elem, 'left')) + symbol * stepLength + 'px';
+          cover += stepLength;
+        } else {
+          elem.style.left = to + 'px';
+          clearInterval(intervalId);
+          progress(pros[nowIndex], proDuration, proInterval);
+        }
+      }
+      var intervalId = setInterval(step, interval);
+    }
+
+
+
+    //进度条 需求 开始值，结束值，步长（每一次移动多少距离），tempindex记录点击的一个值
+    function progress(elem, duration, interval) {
+      var startWidth = 0;
+      var endWidth = parseInt(getStyle(elem.parentNode, 'width')); //因为elem初始值是0,所以无效，所以取其父级的宽度；
+      var stepLength = endWidth / (duration / interval);
+      var tempindex = nowIndex;
+
+      var proStep = () => {
+        if (tempindex !== nowIndex) {
+          clearInterval(intervalId);
+          //↑这里虽然停止计时器，但是这一个函数（！！选定的前一个元素！！）会执行完成再结束，所以之后需要加一个startWidth
+          elem.style.width = '0px';
+          startWidth = 0;
+          //↑这里是为了点击其他改变之前的进度条开始值，以及去除加载的进度条
+        }
+        if (startWidth + stepLength < endWidth) {
+          elem.style.width = startWidth + stepLength + 'px';
+          startWidth += stepLength;
+        } else {
+          elem.style.width = 0 + 'px';
+          clearInterval(intervalId)
+          nowIndex++;
+          nowIndex = nowIndex % picNum;
+          moveTo(imgwrap, -nowIndex * picWidth, picDuration, picInterval);
+        }
+      }
+
+      var intervalId = setInterval(proStep, interval);
+      //每次倒计时开始时
+    }
+
+    function getStyle(elem, cssName) {
+      if (window.getComputedStyle) {
+        return window.getComputedStyle(elem)[cssName];
+      } else {
+        return elem.currentStyle[cssName];
+      }
+    }
+  </script>
+</body>
+
+</html>
