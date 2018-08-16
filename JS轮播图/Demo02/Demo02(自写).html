@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Demo02轮播图</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .main {
+      width: 980px;
+      margin: 100px auto;
+      overflow: hidden;
+      position: relative;
+      height: 210px;
+    }
+
+    #imgwrap {
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    #prev,
+    #next {
+      display: block;
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
+      font-weight: bold;
+      text-align: center;
+      font-size: 35px;
+      line-height: 40px;
+      background: rgba(0, 0, 0, 0.2);
+      color: #fff;
+      cursor: pointer;
+    }
+    #prev{
+      left: 0;
+    }
+    #next{
+      right: 0;
+    }
+
+    #controls{
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 20px;
+    }
+    #controls span{
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background:rgba(33,33,33,0.3);
+    }
+    #controls span.on{
+      background: white; 
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div id="imgwrap">
+      <img src='../images/1.jpg'>
+      <img src='../images/2.png'>
+      <img src='../images/3.jpg'>
+      <img src='../images/4.png'>
+      <img src='../images/5.jpg'>
+      <img src="../images/1.jpg">
+    </div>
+    <span id="prev">&lt;</span>
+    <span id="next">&gt;</span>
+    <div id="controls">
+      <span class="on" data-index="0"></span>
+      <span data-index="1"></span>
+      <span data-index="2"></span>
+      <span data-index="3"></span>
+      <span data-index="4"></span>
+    </div>
+  </div>
+
+  <script>
+    var controls = document.getElementById('controls')
+    var spans = controls.querySelectorAll('span');
+    var imgwrap = document.querySelector('#imgwrap');
+    var next = document.querySelector('#next');
+    var prev = document.querySelector('#prev');
+    //图片属性
+    var druation = 500;//移动时间
+    var interval = 20;//移动间隔
+    var stopDuration = 3500;//停留时间
+    var picWidth = 980;
+    var picNum = imgwrap.querySelectorAll('img').length;
+    var nowIndex = 0;
+    var end = false;
+    var timer = setInterval(auto,stopDuration+interval);
+
+    var unboundForEach = Array.prototype.forEach;
+    var forEach = Function.prototype.call.bind(unboundForEach);
+  
+    forEach(spans,(el,index)=>{
+        el.addEventListener('click',()=>{
+          console.log(index);
+          nowIndex = index;
+          changeControl();
+          moveTo(imgwrap,-index*picWidth,druation,interval);
+        })
+    })
+    
+    function auto(){
+      nowIndex++;
+      nowIndex = nowIndex % picNum;
+      moveTo(imgwrap,-nowIndex*picWidth,druation,interval);
+      if(nowIndex%picNum == 5){
+        nowIndex = 0;
+        end = true; //到达最后一个5.jpg的图片时候，设置一个true,为了无缝连接
+      }
+      changeControl();
+    }
+    //改变每个圆圈的样式
+    function changeControl(){
+      forEach(spans,(el)=>{
+        el.className = ''
+      })
+      spans[nowIndex].className = 'on'
+    }
+    //图片移动
+    function moveTo(elem,to,druation,interval){
+      console.log(to);
+      var origin = parseInt(getStyle(elem,'left'));
+      //这里对现在所在的位置进行调整为0从0重新开始，要做的是将5-1变为我们所想的0-1图片之间的切换
+      if(end){
+        elem.style.left = '0px';
+        origin = 0;
+        end = false;
+      }
+      var dis = Math.abs(to - origin);
+      var symbol = (to-origin)/dis;
+      var stepLength = dis/(druation/interval);
+      var cover = 0;
+      var tempIndex=nowIndex;
+      if(nowIndex == 5){
+        tempIndex = 0;
+      }
+      console.log(dis)
+      var step = ()=>{
+        if(tempIndex != nowIndex){
+          clearInterval(IntervalId)
+        }
+        if(cover + stepLength < dis){
+          elem.style.left = parseInt(getStyle(elem,'left')) + symbol*stepLength + 'px';
+          cover += stepLength
+        }else{
+          elem.style.left = to + 'px';
+          clearInterval(IntervalId);
+        }
+      }
+      var IntervalId = setInterval(step,interval);
+    }
+    
+    next.onclick=function(){
+    	nowIndex++;
+    	nowIndex=nowIndex%picNum;
+    	moveTo(imgwrap,-nowIndex*picWidth,500,20);
+      if(nowIndex == 5){  
+        //nowIndex从0开始，实际指向第六个图时候，我们将其指向0,为了改变圆圈样式，并且end设置为true,为了达到无缝连接
+        nowIndex = 0 ;
+        end = true;
+      }
+    	changeControl();
+
+    }
+    prev.onclick=function(){
+    	nowIndex--;
+
+    	if(nowIndex===-1){
+    		nowIndex=picNum-2;
+    		imgwrap.style.left=-picWidth*(picNum-1)+'px';
+    		
+    	}
+    	changeControl();
+    	moveTo(imgwrap,-nowIndex*picWidth,druation,interval);
+    }
+    prev.onmouseover=function(){clearInterval(timer);}
+    next.onmouseover=function(){clearInterval(timer);}
+    prev.onmouseout=function(){timer=setInterval(auto,stopDuration+slideDuration);}
+    next.onmouseout=function(){timer=setInterval(auto,stopDuration+slideDuration);}
+
+    function getStyle(elem,cssName){
+      if(window.getComputedStyle){
+        return window.getComputedStyle(elem)[cssName];
+      }else{
+        return elem.currentStyle[cssName];
+      }
+    }
+
+  </script>
+</body>
+
+</html>
