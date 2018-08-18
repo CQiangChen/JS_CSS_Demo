@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>高度过渡</title>
+  <style>
+    .frm{
+      border: 1px solid black;
+      padding: 10px;
+      margin: 10px;
+    }
+    .frm .desc{
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.5s;
+    }
+    .frm:hover > .desc{
+      max-height: var(--down);
+    }
+  </style>
+</head>
+<body>
+    <div class="frm">
+      Hover me to see a short height transion.
+      <div class="desc">
+        <p>content</p>
+      </div>
+    </div>
+    <div class="frm">
+        Hover me to see a long height transion.
+        <div class="desc">
+            <p>content</p>
+            <p>content</p>
+        </div>
+    </div>
+    <script>
+      var descs = document.querySelectorAll('.desc');
+      var height = [];
+      Array.prototype.forEach.call(descs,(el)=>{
+        console.log(el.scrollHeight); //可以获取到总内容的高度，包括超出被隐藏部分
+        el.style.setProperty('--down',el.scrollHeight + 'px'); //直接加到对应的div的style上
+      })
+    </script>
+</body>
+</html>

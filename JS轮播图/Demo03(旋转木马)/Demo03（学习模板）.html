@@ -13,7 +13,7 @@
 	.poster-item{position:absolute;border-radius:8px;overflow:hidden;box-shadow:0 0 5px #ccc;}
 	.poster-item0{left:0;top:67px;z-index:1;width:240px;height:105px;}
 	.poster-item1{left:100px;top:42px;width:360px;height:157px;z-index:2;}
-	.poster-item2{top:0;left:215px;z-index:3;}
+	.poster-item2{top:0;left:215px;width:500px;height:100%;z-index:3;}
 	.poster-item3{top:42px;width:360px;height:157px;z-index:2;left:505px;}
 	.poster-item4{top:67px;width:240px;height:105px;z-index:1;left:740px;}
 	.poster-controls{text-align:center;position:absolute;width:100%;height:40px;bottom:0;left:0;line-height:40px;}
@@ -34,6 +34,16 @@
 	<div class='poster-controls' id='poster-controls'><span></span><span></span><span class='cur'></span><span></span><span></span></div>
 </div>
 <script>
+
+	/*
+		具体操作：（针对图片移动）
+		1、首先对应html中的静态元素获取对应的left,top,width,height,z-index
+		2、将其一一Push进arr中，为了之后的轮播变动。并且之后不要对arr本身进行改动
+		3、每次移动首先改变controls的class，然后获取arr，并对arr进行调整，放在一个新的newArr中，利用pop()抛掉最后的元素,shift()抛掉最前的元素
+		4、对静态html中的每个li的z-index覆盖，（简单说就是改变谁在最前面）
+		5、然后利用cat方法，传入改变后的li的集合，以及newArr,获取每个li的当前style，并按1中的几个元素进行改动，中间增添一些操作使其更为圆滑的变化
+	*/
+
   //获取元素样式值
 function getStyle(elem,cssname){
 	if(window.getComputedStyle){
@@ -97,6 +107,7 @@ window.onload=function(){
     console.log(arr.slice(0))
   	var newArr=center(arr.slice(0),index);
     console.log(newArr)
+    
   	for(var i=0;i<len;i++){
   		posterList[i].style.zIndex=newArr[i].zIndex;
   		act(posterList[i],newArr[i])
@@ -134,9 +145,11 @@ window.onload=function(){
   			var current=parseInt(getStyle(elem,p));
   			var target=parseInt(elemStyles[p]);
 
+				//移动的动画设置
   			var speed=(target-current)/8;
-  			
   			speed=speed>0?Math.ceil(speed):Math.floor(speed);
+				// 两个注释之间的代码不要不会影响轮播操作
+
   			if(current!=target){stop=false;}
   			elem.style[p]=current+speed+'px';
 
