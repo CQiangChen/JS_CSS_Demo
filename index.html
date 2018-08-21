@@ -1,12 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>Demo展示入口</title>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    .title {
+      position: absolute;
+      left: 50%;
+      top: 40px;
+      transform: translateX(-50%);
+      -webkit-text-stroke: 1px #000;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #wrap {
+      position: absolute;
+      left: 10%;
+      top: 20%;
+      bottom: 10%;
+      right: 10%;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    a {
+      text-decoration: none;
+      display: block;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 0 rgb(94, 47, 170);
+      text-align: center;
+      line-height: 150px;
+      font-size: 30px;
+      font-weight: 300;
+      margin: 10px;
+      /* 超出部分省略 */
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    ul{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .demo-list{
+      display: none;  
+    }
+    .show-list{
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .btn-demo{
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+      text-align: center;
+      line-height: 150px;
+      font-size: 30px;
+      font-weight: 300;
+      margin: 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
 </head>
+
 <body>
-    <a href="JS轮播图/Demo01(带进度条)/Demo01(自写).html">轮播图</a>
+  <div class="title">
+    <h1>JS_CSS_DEMO</h1>
+  </div>
+  <div id='wrap'>
+    <div class="btn-demo">JS轮播图</div>
+    <ul class="demo-list">
+        <li><a href="JS轮播图/Demo01(带进度条)/Demo01(自写).html" target="_blank">带进度条轮播图</a></li>
+        <li><a href="JS轮播图/Demo02(较完整普通轮播)/Demo02(自写).html" target="_blank">较完整普通轮播图</a></li>
+        <li><a href="JS轮播图/Demo03(旋转木马)/Demo03（学习模板）.html" target="_blank">旋转木马轮播图</a></li>
+    </ul>
+    <div class="btn-demo">高度过渡</div>
+    <ul class="demo-list">
+      <li><a href="高度过渡/Demo01.html" target="_blank">高度过渡</a></li>
+    </ul>
+
+  </div>
+
+  <script>
+    var btns = document.querySelectorAll('.btn-demo');
+    var uls = document.querySelectorAll('.demo-list');
+    var clickNum = 0; 
+    var proel = null;
+    var unboundForEach = Array.prototype.forEach;
+    var forEach = Function.prototype.call.bind(unboundForEach);
+
+    forEach(btns,(el,index)=>{
+      el.addEventListener('click',()=>{
+        if(proel == null){
+          proel = el;
+        }
+        if(proel != el){
+          clickNum = 0;
+        }
+        clickNum++ ;
+        clickNum = clickNum % 2; 
+        changeUlClass(index);
+        proel = el;        
+      })
+    })
+
+    function changeUlClass(index){
+      forEach(uls,(el)=>{
+        el.className = 'demo-list'
+      })
+      if(clickNum == 1){
+        uls[index].className = 'show-list'
+      } 
+    }    
+  </script>
 </body>
+
 </html>
