@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .circleProgress_wrapper {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      /* background: #eee; */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      line-height: 150px;
+      font-size: 30px;
+      -webkit-text-stroke: 1px #000;
+      -webkit-text-fill-color: transparent;
+      /* transprent：相当于一个颜色，色值是透明 */
+    }
+
+    .inside-frm {
+      position: absolute;
+      top: 0;
+      width: 75px;
+      height: 150px;
+      overflow: hidden;
+    }
+
+    .left-frm {
+      left: 0;
+      /* background: red; */
+    }
+
+    .right-frm {
+      right: 0;
+      /* background: black; */
+    }
+
+    .border-back {
+      width: 150px;
+      height: 150px;
+      border: .4rem solid #eee;
+      border-radius: 50%;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+    }
+
+    .left-progress {
+      border-bottom: .4rem solid #8731fd;
+      border-left: .4rem solid #8731fd;
+      left: 0;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+
+    .right-progress {
+      border-top: .4rem solid #8731fd;
+      border-right: .4rem solid #8731fd;
+      right: 0;
+      -webkit-transform: rotate(45deg);
+      transform: rotate(45deg);
+    }
+
+    
+    .right_cartoon {
+      -webkit-animation: circleProgressLoad_right 10s linear infinite forwards;
+      animation: circleProgressLoad_right 10s linear infinite forwards ;
+    }
+
+    .left_cartoon {
+      -webkit-animation: circleProgressLoad_left 10s linear infinite forwards;
+      animation: circleProgressLoad_left 10s linear infinite forwards;
+    }
+
+
+    @keyframes circleProgressLoad_left {
+      0% {
+        -webkit-transform: rotate(46deg);
+        transform: rotate(46deg)
+      }
+      50%,
+      to {
+        -webkit-transform: rotate(-136deg);
+        transform: rotate(-136deg)
+      }
+    }
+
+    @keyframes circleProgressLoad_right {
+      0%,
+      50% {
+        -webkit-transform: rotate(46deg);
+        transform: rotate(46deg);
+      }
+
+      to {
+        -webkit-transform: rotate(-136deg);
+        transform: rotate(-136deg)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="circleProgress_wrapper">
+    <div class="inside-frm left-frm">
+      <div class="border-back left-progress left_cartoon">
+
+      </div>
+    </div>
+    <div class="inside-frm right-frm">
+      <div class="border-back right-progress right_cartoon">
+
+      </div>
+    </div>
+    <span id="timer">10</span>
+  </div>
+
+  <script>
+        var timer= document.getElementById('timer');
+        var time = 9;
+        setInterval(function(){
+          timer.innerHTML = time;
+          time--;
+          if(time < 0)time=10;
+        },1000);
+  </script>
+</body>
+
+</html>
