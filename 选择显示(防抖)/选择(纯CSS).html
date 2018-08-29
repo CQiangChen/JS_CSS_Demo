@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .block{
+      width: 300px;
+      height: 100px;
+      background: #eee;
+    }
+    .choose-left{
+      position: relative;
+    }
+    .choose-left::before{
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-top: 25px solid rgb(128, 126, 126); 
+      border-right: 25px solid transparent; 
+    }
+    .choose-left::after{
+      content: '✓';
+      color: white;
+      position: absolute;
+      left: 2px;
+      top: -2px;
+      font-size: 15px;
+    }
+    .choose-active::before{
+      content: '';
+      border-top: 25px solid rgb(58, 95, 43);
+    }
+  </style>
+</head>
+<body>
+  <div class="block choose-left choose-active">
+  </div>
+
+  <script src="./debounce.js"></script>
+  <script>
+    var choose_left = document.querySelector('.choose-left');
+
+    function changeStatus(){
+      var newChoose = choose_left.className.split(' ');
+      var isHas = newChoose.indexOf('choose-active');
+      if(isHas > 0){
+        newChoose.splice(isHas,1);
+        choose_left.className = newChoose.join(' ');      
+      }else{
+        newChoose.push('choose-active');
+        choose_left.className = newChoose.join(' ');
+      }
+    }
+    
+    choose_left.addEventListener('click',debounce(changeStatus,1000,true));
+    
+  </script>
+</body>
+</html>
