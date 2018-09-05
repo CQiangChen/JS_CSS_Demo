@@ -24,7 +24,7 @@ function debounce(func, wait,immediate){
         console.log('--------setTimeout执行--------');
         timeout = null;
       },wait);
-      console.log('------' + callNow + timeout + '-------');
+      console.log('------------------------');
       if(callNow){
         console.log('---------func方法执行---------');
         result = func.apply(this,arguments); 
