@@ -121,6 +121,7 @@
     var unboundForEach = Array.prototype.forEach;
     var forEach = Function.prototype.call.bind(unboundForEach);
 
+
     forEach(btns,(el,index)=>{
       el.addEventListener('click',()=>{
         if(proel == null){
