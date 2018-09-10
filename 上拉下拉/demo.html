@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="./listenTounchDirection.js"></script>
+    <link rel="stylesheet" href="./demo.css">
+</head>
+
+<body>
+    <div class="content">
+        <div class="type my-recipes"></div>
+        <div class="type guides"></div>
+        <div class="type recipes"></div>
+    </div>
+    <div class="footer">
+        <span id="js-move">--</span>
+        <span>Connect to Start Cooking</span>
+    </div>
+
+    <script>
+        var js_move = document.getElementById('js-move');
+        var winHeight = window.innerHeight;
+        var isMove = false;
+        /**
+         * 监听resize事件适当修正winHeight的精确度
+         */
+        window.addEventListener('resize', function (event) {
+            winHeight = window.innerHeight;
+        });
+
+        js_move.onclick = function () {
+            if(isMove){
+                js_move.offsetParent.style.height = 40 + 'px';
+            }else{
+                js_move.offsetParent.style.height = winHeight + 'px';
+            }
+            isMove = !isMove;
+        }
+        
+        EventUtil.listenTouchDirection(js_move.offsetParent, true, up, false, down,false)
+        
+        function up(){
+            js_move.offsetParent.style.height = winHeight + 'px';
+            isMove = !isMove;
+        }
+        function down(){
+            js_move.offsetParent.style.height = 40 + 'px';
+            isMove = !isMove;
+        }
+    </script>
+</body>
+
+</html>
